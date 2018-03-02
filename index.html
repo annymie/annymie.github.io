@@ -259,6 +259,617 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/02/MachineLearning02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Annmk">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bowwow">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/02/MachineLearning02/" itemprop="url">《机器学习》第二章 模型评估与选择</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-02T22:30:44+08:00">
+                2018-03-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/02/MachineLearning02/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/02/MachineLearning02/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="经验误差与过拟合"><a href="#经验误差与过拟合" class="headerlink" title="经验误差与过拟合"></a>经验误差与过拟合</h3><p>错误率（error rate）：$E=\frac{a}{m}$</p>
+<p>精度（accuracy）：$1-\frac{a}{m}$</p>
+<p>误差（error）：学习器的实际预测输出与样本的真实输出之间的差异</p>
+<p>训练误差（training error）/经验误差（empirical error）：学习器在训练集上的误差</p>
+<p>泛化误差（generalization）：学习器在新样本上的误差</p>
+<p>过拟合（overfitting）：学习器把训练样本自身的一些特点当作了所有潜在样本都会具有的一般性质，导致泛化性能下降</p>
+<p>欠拟合（underfitting）：对训练样本的一些性质尚未学好</p>
+<p>模型选择（model selection）</p>
+<h3 id="评估方法"><a href="#评估方法" class="headerlink" title="评估方法"></a>评估方法</h3><p>测试集（testing set）</p>
+<p>测试误差（testing error）</p>
+<p>通过对数据集D进行适当的处理，从中产生出训练集S和测试集T</p>
+<h4 id="留出法"><a href="#留出法" class="headerlink" title="留出法"></a>留出法</h4><p>“留出法”（hold-out）直接将数据集D划分为两个互斥的集合，一个作为训练集S，另一个作为测试集T。</p>
+<p>训练/测试集的 划分要尽可能保持数据分布的一致性，可采取分层采样。使用留出法时，一般采用若干次随机划分、重复进行实验评估后取平均值作为流出法的评估结果。常见做法是将大约2/3~4/5的样本用于训练，剩余样本用于测试。</p>
+<h4 id="交叉验证法"><a href="#交叉验证法" class="headerlink" title="交叉验证法"></a>交叉验证法</h4><p>“交叉验证法”（cross validation）先将数据集D随机p次划分为k个大小相似的互斥子集，每个子集都尽可能保持数据分布的一致性，即从D中通过分层采样得到。然后每次用k-1个子集的并集作为训练集，余下的那个子集作为测试集，共进行k-1组测试。称为“p次k折交叉验证”。</p>
+<p>留一法（Leave-One-Out），令k=数据集中的样本数。</p>
+<h4 id="自助法"><a href="#自助法" class="headerlink" title="自助法"></a>自助法</h4><p>“自助法”（bootstrapping），以自助采样法（bootstrap sampling）为基础，给定包含m个样本的数据集D，对它进行采样得到数据集D’：每次随机从D中挑选一个样本，将其拷贝放入D’，然后再将该样本放回初始数据集D中，使得该样本在下次采样时仍有可能被采到；这个过程重复执行m次后，就得到了包含m个样本的数据集D’。样本在m次采样中始终不被采到的概率是$${\lim_{m \to +\infty}}(1-\frac{1}{m})^m \mapsto \frac{1}{e}\approx 0.368$$</p>
+<p>将D’作为训练集，D\D’作为测试集。这样的测试结果，亦称“包外估计”（out-of-bag estimate）</p>
+<h4 id="调参与最终模型"><a href="#调参与最终模型" class="headerlink" title="调参与最终模型"></a>调参与最终模型</h4><p>“调参”（parameter tuning），一般对每个参数设置一个范围和变化步长，产生几个候选值，从几个候选值中产生选定值。</p>
+<p>在模型选择完成后，学习算法和参数设置已选定，此时应该用数据集D重新训练模型。</p>
+<h3 id="性能度量"><a href="#性能度量" class="headerlink" title="性能度量"></a>性能度量</h3><p>性能度量（performance measure）：衡量模型泛化能力的评价标准</p>
+<p>设样例集$D  = { ( x_1, y_1), (x_2, y_2), … , (x_m, y_m) }$</p>
+<p>回归任务常用“均方误差”（mean squared error）</p>
+<p>$$E(f; D) = \frac{1}{m}\sum_{i=1}^{m}(f(x_i) - y_i )^2$$</p>
+<p>更一般的形式为$$E(f; D) = \int_{x \sim D}(f(x) - y)^2 p(x) dx$$</p>
+<h4 id="错误率与精度"><a href="#错误率与精度" class="headerlink" title="错误率与精度"></a>错误率与精度</h4><p>错误率$$E(f; D) = \frac{1}{m}\sum_{i=1}^{m} \mathbb I (f(x_i)  \neq  y_i )$$</p>
+<p>更一般的形式为$$E(f; D) = \int_{x \sim D} \mathbb I (f(x) \neq y) p(x) dx$$</p>
+<p>精度$$E(f; D) = \frac{1}{m}\sum_{i=1}^{m} \mathbb I (f(x_i)  = y_i )$$</p>
+<p>更一般的形式为$$E(f; D) = \int_{x \sim D} \mathbb I (f(x) = y) p(x) dx$$</p>
+<h4 id="查准率、查全率与F1"><a href="#查准率、查全率与F1" class="headerlink" title="查准率、查全率与F1"></a>查准率、查全率与F1</h4><p>TP：真正例；FN：假反例；FP：假正例；TN：真反例</p>
+<p>“查准率”（precision）$P=\frac{TP}{TP+FP}$</p>
+<p>“查全率”（recall） $R=\frac{TP}{TP+FN}$</p>
+<p>P-R图直观地展示出学习器在样本总体上的查全率、查准率，一般比较P-R曲线下面积的大小，但不太容易估算，所以人们设计了一些综合考虑查准率、查全率的性能度量。</p>
+<p>$“平衡点”（Break-Even Point, 简称BEP）：$“查准率”等于“查全率”时的取值.</p>
+<p>$F1：$查全率和查准率的调和平均值.</p>
+<p>$$F1=\frac{2\times P \times R}{P+R}=\frac{2\times TP}{样例总数+TP-TN}$$</p>
+<p>$F_\beta：$查全率和查准率的加权调和平均值.</p>
+<p>$$F_\beta=\frac{(1+\beta^2)\times P \times R}{( \beta^2 \times P) + R}$$</p>
+<p>在n个二分类混淆矩阵上综合考察查准率和查全率</p>
+<p>第一种方法是在各混淆矩阵上分别计算出查准率和查全率，再计算平均值，称为“宏查准率（macro-P）”“宏查全率（macro-R）”“宏F1（macro-F1）”.</p>
+<p>第二种方法是将各混淆矩阵的对应元素进行平均，得到TP、FP、TN、FN的平均值，再基于这些平均值计算出“微查准率（micro-P）”“微查全率（micro-R）”“微F1（micro-F1）”.</p>
+<h4 id="ROC与AUC"><a href="#ROC与AUC" class="headerlink" title="ROC与AUC"></a>ROC与AUC</h4><h5 id="“ROC曲线”（Receiver-Operating-Characteristic）"><a href="#“ROC曲线”（Receiver-Operating-Characteristic）" class="headerlink" title="“ROC曲线”（Receiver Operating Characteristic）"></a>“ROC曲线”（Receiver Operating Characteristic）</h5><p>很多学习器是为测试样本产生一个实值或概率预测，然后将这个预测值与一个分类阈值（threshold）进行比较，大于阈值则分为正类，否则为反类。根据这个实值或概率预测结果，我们可将测试样本进行排序，“最可能”是正例的排在最前面，“最不可能”是正例的排在最后面。而在不同的应用任务中，我们可根据任务需求来采用不同的“截断点”（cut point）。而排序的质量好坏，体现了综合考虑学习器在不同任务下“期望泛化性能”的好坏，ROC曲线则是从这个角度出发研究学习器泛化性能的工具。</p>
+<p>根据学习器的预测结果对样例进行排序，按此顺序逐个把样本作为正例进行预测，以“真正例率”（True Positive Rate，简称TPR）作为纵轴，“假正例率”（False Positive Rate，简称FPR）作为横轴，得到“ROC曲线”。</p>
+<h5 id="“AUC”（Area-Under-ROC-Curve）"><a href="#“AUC”（Area-Under-ROC-Curve）" class="headerlink" title="“AUC”（Area Under ROC Curve）"></a>“AUC”（Area Under ROC Curve）</h5><p>ROC曲线下的面积</p>
+<p>$$AUC = \frac{1}{2} \sum_{i=1}^{m-1} (x_i+1 - x_i) \times (y_i + y_i+1)$$</p>
+<p>$$AUC = 1 - l_{rank} $$</p>
+<h4 id="代价敏感错误率与代价曲线"><a href="#代价敏感错误率与代价曲线" class="headerlink" title="代价敏感错误率与代价曲线"></a>代价敏感错误率与代价曲线</h4><p>不同类型的错误造成的后果不同，可为错误赋予“非均等代价”（unequal cost），设定“代价矩阵”（cost matrix）。注意，一般情况下重要的是cost01和cost10的比值。</p>
+<p>“代价敏感”（cost-sensitive）错误率为</p>
+<p>$$E(f; D; cost) = \frac{1}{m} \sum_{x_i \in D^+} \mathbb I (f(x_i)  \neq  y_i ) \times cost_{01} + \frac{1}{m} \sum_{x_i \in D^-} \mathbb I (f(x_i)  \neq  y_i ) \times cost_{10}$$</p>
+<p>此时采取“代价曲线”（cost curve）而非ROC曲线反映学习器的总体期望代价。</p>
+<p>横轴为取值为[0, 1] 的正例概率代价</p>
+<p>$$P(+)cost = \frac{p \times cost_{01}}{p \times cost_{01} + (1 - p) \times cost_{10}}$$</p>
+<p>纵轴为取值为[0, 1] 的归一化代价</p>
+<p>$$cost_{norm} = \frac{FNR \times p \times cost_{01} + FPR \times (1 - p) \times cost_{10}}{p \times cost_{01} + (1 - p) \times cost_{10}}$$</p>
+<h3 id="比较检验"><a href="#比较检验" class="headerlink" title="比较检验"></a>比较检验</h3><p>基于假设检验，我们可推断出，若在测试集上观测到学习器A比B好，则A的泛化性能是否在统计意义上优于B，以及这个结论的把握有多大。</p>
+<h4 id="假设检验"><a href="#假设检验" class="headerlink" title="假设检验"></a>假设检验</h4><p>$ 泛化错误率\epsilon $</p>
+<p>$ 测试错误率\widehat{ \epsilon } $</p>
+<p>“二项检验”（binomial test）$ P( \widehat{ \epsilon }; \epsilon ) = \begin{pmatrix} m \ \widehat{ \epsilon } \times m \end{pmatrix} \epsilon^{ \widehat{ \epsilon} \times m} ( 1 - \epsilon)^{m - \widehat{ \epsilon} \times m} $</p>
+<p>“t检验”（t-test）$ \tau_t = \frac{ \sqrt{k}( \mu - \epsilon_0 ) }{ \sigma } \sim t( k - 1) $</p>
+<h4 id="交叉验证T检验"><a href="#交叉验证T检验" class="headerlink" title="交叉验证T检验"></a>交叉验证T检验</h4><p>k折交叉验证“成对t检验”（paired t-tests）</p>
+<p>基本思想：若两个学习器的性能相同，则它们使用相同的训练/测试集得到的测试错误率应相同</p>
+<p>先对两个学习器A和B每对测试错误率求差值，再根据差值做t检验</p>
+<p>$$ \tau_t = \left| \frac{ \sqrt{k} \mu}{ \sigma } \right| \sim t(n - 1) $$</p>
+<h4 id="MCNEMAR-检验"><a href="#MCNEMAR-检验" class="headerlink" title="MCNEMAR 检验"></a>MCNEMAR 检验</h4><h4 id="FRIEDMAN-检验-与-NEMENYI-后续检验"><a href="#FRIEDMAN-检验-与-NEMENYI-后续检验" class="headerlink" title="FRIEDMAN 检验 与 NEMENYI 后续检验"></a>FRIEDMAN 检验 与 NEMENYI 后续检验</h4><h3 id="偏差与方差"><a href="#偏差与方差" class="headerlink" title="偏差与方差"></a>偏差与方差</h3>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/02/MachineLearning01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Annmk">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bowwow">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/02/MachineLearning01/" itemprop="url">《机器学习》第一章 绪论</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-02T22:30:34+08:00">
+                2018-03-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/02/MachineLearning01/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/02/MachineLearning01/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>模型（model）：从数据中取得的结果，全局/局部.</p>
+<p>学习算法（learning algorithm）：在计算机上从数据中产生“模型”的算法.</p>
+<h3 id="基本术语"><a href="#基本术语" class="headerlink" title="基本术语"></a>基本术语</h3><p>数据集（data set）：一组数据的集合.</p>
+<p>示例（instance）/样本（simple）/特征向量（feature vector）：关于一个事件或对象的描述.</p>
+<p>属性（attribute）/特征（feature）：反映事件或对象在某方面的表现或性质的事项.</p>
+<p>属性值（attribute value）：属性上的取值.</p>
+<p>属性空间（attribute space）/样本空间（simple space）/输入空间：属性张成的空间.</p>
+<p>维数（dimensionality）：一个样本属性的个数.</p>
+<p>学习（learning）/训练（training）：从数据中学得模型的过程.</p>
+<p>训练数据（training data）：训练中使用的数据.</p>
+<p>训练样本（training simple）/训练示例（training instance）：训练数据的每组样本.</p>
+<p>训练集（training simple）：训练样本的集合.</p>
+<p>假设（hypothesis）：学得的模型.</p>
+<p>真相/真实（ground-truth）：学得的模型对于的关于数据的某种潜在规律.</p>
+<p>学习器（learner）：学习算法在给定数据和参数空间的实例化.</p>
+<p>预测（projection）</p>
+<p>标记（label）：训练样本的“结果”信息.</p>
+<p>样例（simple）：有标记信息的示例，如$(x_i, y_i)$</p>
+<p>标记空间（label space）/输出空间：所有标记的集合.</p>
+<p>分类（classification）：预测离散值的学习任务.</p>
+<p>回归（regression）：预测连续值的学习任务.</p>
+<p>二分类（binary classification）：只涉及两个类别的分类，正类（positive class）/反类（negative class）.</p>
+<p>多分类（multi-class classification）：涉及多个类别的分类.</p>
+<p>预测任务是希望通过对训练集${(x_1, y_1), (x_2, y_2), …… , (x_m, y_m) } $进行学习，建立一个从输入空间Χ到输出空间Υ的映射 f：Χ→Υ， Υ的大小根据预测目标而定.</p>
+<p>测试（testing）：学得模型后，使用其进行预测的过程.</p>
+<p>测试样本（testing simple）：被预测的样本.</p>
+<p>聚类（clustering）：将训练集分为若干组.</p>
+<p>簇（cluster）：聚类分成的一个组.</p>
+<p>监督学习（supervised learning）：训练数据具有标记信息的学习任务，如分类、回归.</p>
+<p>无监督学习（unsupervised learning）：训练数据不具有标记信息的学习任务，如聚类.</p>
+<p>泛化（generalization）：学得模型适用于新样本的能力.</p>
+<p>分布（distribution）</p>
+<p>独立同分布（independent and identically distributed）</p>
+<h3 id="假设空间"><a href="#假设空间" class="headerlink" title="假设空间"></a>假设空间</h3><p>归纳（induction）：从特殊到一般的“泛化”（generalization）过程，从具体的事实归结出一般性规律.</p>
+<p>演绎（deduction）：从一般到特殊的“特化”（specialization）过程，从基础原理推演出具体状况.</p>
+<p>归纳学习（inductive learning）</p>
+<p>学习过程是在所有假设（hypothesis）组成的空间中进行搜索的过程，搜索目标是找到与训练集“匹配”（fit）的假设.</p>
+<p>版本空间（version space）；多个与训练集一致的假设构成的集合.</p>
+<h3 id="归纳偏好"><a href="#归纳偏好" class="headerlink" title="归纳偏好"></a>归纳偏好</h3><p>归纳偏好（inductive bias）：机器学习算法在学习过程中对某种类型假设的偏好.</p>
+<p>特征选择（feature selection）：对哪种特征更重视.</p>
+<p>奥卡姆剃刀（Occam’s razor）：若有多个假设与观察一致，则选最简单的那个.</p>
+<p>没有免费的午餐（No Free Lunch Theorem/NFL）：假设所有“问题”出现的机会相等，所有学习算法的期望性能相同。——脱离实际问题，空泛地谈论“什么学习算法更好毫无意义”.</p>
+<h3 id="发展历程"><a href="#发展历程" class="headerlink" title="发展历程"></a>发展历程</h3><p>1950-1970：“推理期”，赋予机器逻辑推理能力.<br>1970s中期：“知识期”，知识工程，建立专家系统<br>1950s中后期出现：“连接主义”，包括感知机、adaline<br>1960-1970：“符号主义”（symbolism）学习，包括“决策树”（decision tree）和基于逻辑的学习（归纳逻辑程序设计Inductive Logic Programming，简称ILP）.<br>1990中期之前：基于神经网络的“连接主义”（connectionism）学习，如BP算法.<br>1990：“统计学习”（statistical learning），如支持向量机（Support Vector Machine，简称SVM）以及更一般的“核方法”（kernal methods）.<br>2000：连接主义卷土重来，“深度学习”，狭义地说就是“很多层”的神经网络。模型复杂度高，以至于只要下功夫调参，把参数调节好，性能往往就好.</p>
+<h3 id="应用现状"><a href="#应用现状" class="headerlink" title="应用现状"></a>应用现状</h3><p>大数据时代的三大关键技术：机器学习提供数据分析能力，云计算提供数据处理能力，众包（crowdsourcing）提供数据标记能力.</p>
+<p>数据挖掘（data mining）：从海量数据中发掘知识，机器学习和数据库是其两大支撑.</p>
+<h3 id="阅读材料"><a href="#阅读材料" class="headerlink" title="阅读材料"></a>阅读材料</h3><p>重要会议及期刊</p>
+<h4 id="机器学习"><a href="#机器学习" class="headerlink" title="机器学习"></a>机器学习</h4><p>国际机器学习会议（ICML）、国际神经信息处理会议系统会议（NIPS）和国际学习理论会议（COLT）</p>
+<p>欧洲机器学习会议（ECML）和亚洲机器学习会议（ACML）</p>
+<p>中国机器学习大会（CCML）以及每年举行的“机器学习及其应用”研讨会（MLA）.</p>
+<p>Journal of Machine Learning Research和Machine Learning</p>
+<h4 id="人工智能"><a href="#人工智能" class="headerlink" title="人工智能"></a>人工智能</h4><p>IJCAI、AAAI</p>
+<p>Artificial Intelligence、Journal of Artificial Intelligence Research</p>
+<h4 id="数据挖掘"><a href="#数据挖掘" class="headerlink" title="数据挖掘"></a>数据挖掘</h4><p>KDD、ICDM</p>
+<p>ACM Transsactions on Knowledge Discovery from Data、Data Mining and Knowledge Discovery</p>
+<h4 id="计算机视觉与模式识别"><a href="#计算机视觉与模式识别" class="headerlink" title="计算机视觉与模式识别"></a>计算机视觉与模式识别</h4><p>CVPR</p>
+<p>IEEE Transactions on Pattern Analysis and Machine Intelligence</p>
+<h4 id="5-神经网络"><a href="#5-神经网络" class="headerlink" title="5.神经网络"></a>5.神经网络</h4><p>Neural Computation、IEEE Transactions on Neural Networks and Learning Systems</p>
+<p>P.S.统计学Annals of Statistic</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/02/致新博客/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Annmk">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bowwow">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/02/致新博客/" itemprop="url">致新博客</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-02T22:09:12+08:00">
+                2018-03-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/02/致新博客/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/02/致新博客/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>一年前搞的annmk.cn濒临过期，于是打起了新建一个博客的主意。一年以来，东西没搞多少，心却越来越大。希望之后，心能踏实点，能选定方向就好好做。</p>
+<p>以下算是是给之前博客的开场语，也有我为什么要搞博客的原因。我既能在一年前的自己上看到自卑、焦虑、敏感，也能看到倔强、努力和不服输。</p>
+<p>感谢自己。</p>
+<hr>
+<p>一开始知道网协是在军训的宣讲会上。宣传PPT做得很好看，技术部和网络部听起来也相当高大上。</p>
+<p>关注了微信公众号，看了很久推送，认真地写了申请书，犹豫很久点了提交。然后怀着蜜汁自信，没有报其他组织。</p>
+<p>跟李倩妤聊天，我说我想进网协，她说你去认识一下网协的人，聊聊天。我想了很久不知如何开口。</p>
+<p>面试，和婧婧一起去的。非常紧张。 我记得那天还走错了教室，进到理教发现原来地点在宗教，又急急忙忙赶过去。隐约能回想起是张晨阳带我和婧婧去的教室，面试我的是唐回峰和？。当天聊的还可以，蜜汁自信更强烈了。</p>
+<p>然后就是十一出结果，没有回复。为此抑郁了一段时间。</p>
+<p>接着认识马艺展，去了一次网协办公室。准确的说是两次。第一次去，一开始貌似在开会，浩浩荡荡一大堆人，然后开心散会。我犹豫很久没有进，在旁边桌子上自习了一个晚上。第二次去鼓足勇气，装了vs和matlab，认识了杨绮璇、陈宇婷她们。当天是王元玮和李东值班。</p>
+<p>然后诊所外场去了，尬聊了一会儿。</p>
+<p>微软Dell的广告活动也去了。并不知道有什么意义，现在想来这种广告也就只能是广告。</p>
+<p>c语言模拟去了，A的题很惨淡……有几道感觉没问题但一直交不对……可能现在看也都是水题吧。</p>
+<p>c语言串讲去了，复习了基本都知道的概念，讲了那么几个题型。</p>
+<p>数学建模前一天窝在网协蹭网，和张晨阳、马艺展一起。</p>
+<p>寒假搞了几天vpn和十几天acm。</p>
+<p>下学期又去网协请教vpn，遇见了石竞川，一起复印了大批实验报告并熟悉了起来。麻烦贾泽瑞给我搞了半天vpn，结果最后也没有弄出什么，非常抱歉。</p>
+<p>之后感谢张晨阳推荐，我终于混入了网协，加入了执念的技术部。我都觉得我是不是有斯德哥尔摩综合症了，要么就是有受虐倾向，怎么就没有那种“什么！你不要我！我就不要你了！”的豪迈气概呢。</p>
+<p>面试，王元玮和陈天杰，尬聊了一会儿人生，接着知道了技术部之后要搞网页开发，跟着杨绮璇的小组开了例会，很开心。</p>
+<p>之后是我不努力了，是我的问题。没有好好刷题也没有好好搞网页开发，一事无成。中间去听了一次unity。还挺有趣，感觉上手不难。但是也没有下功夫做。最后网页设计结题的组会没有去，因为有学业指导中心的例会。</p>
+<p>之后因为没有加群，一直不知道有例会存在，就没有去过。前一段时间去网协蹭网才得知没加群，然而已经开始换届了。</p>
+<p>我问了张晨阳很多关于网协的问题，还旁听了一次外联部的例会，再一次，认真地写了申请书。</p>
+<p>但是我真的有点不高兴了，我明明很努力了为什么参加网协就是这么艰难呢！再一次想质问为什么！凭什么！</p>
+<p>从两方面分析这个问题①我的能力不配②中间出了差错</p>
+<p>我选择性忽视①地自我感觉良好。</p>
+<p>昨天问了王元玮我凭什么申请，得到了“凭你漂亮吧”的回答。</p>
+<p>？？？？？！！！！！</p>
+<p>爆炸……..</p>
+<p>分析了一下我的内在矛盾心理</p>
+<p>①我这么有能力你跟我说脸？？？！！！</p>
+<p>②我确实没能力，想象自己有能力是骗人的，醒醒吧！！！</p>
+<p>分析了一下对方心理</p>
+<p>①烦死了什么都不会还申请！！！我对你的印象只有脸了！！！</p>
+<p>②这么严肃的问题我说一说白烂话活跃一下吧！！！</p>
+<p>行吧…….</p>
+<p>不过凭这句话，估计能打很久的鸡血了。</p>
+<p>想放松时，别忘了别人会说，你走到现在，大概是凭你的漂亮吧。</p>
+<p>于是今天5点多醒了，看完了金旭亮的知乎live笔记了一下。弄了几个小时网站后去F2N做志愿者。</p>
+<p>回家晚上8点多，又搞了几小时搞出了这个网站。</p>
+<hr>
+<p>今天网协换届面试终于结束了，之前花了那么多心思做ppt、写演讲稿，那么希望能够留下来，好像突然也没所谓了。</p>
+<p>原来部长团和主席团一共有那么多人，很多人我不认识。我知道有些人对我抱有莫名的敌意，可能我说了他们部门不好的话吧。人就是这样很矛盾，你让别人讲缺点，真的讲出来你就面对不了了。还有的属于本能感觉气场不合，那也没办法。可能很多人还是客气了，没说什么，其实我很希望他们能多说点，我真的很想交流。之前我没有机会交流，好不容易才这么一次呢。</p>
+<p>啊，原来这就是网协，这种感觉今天又出现了。网协就是这样，说好听叫随性，说难听叫不靠谱，还有无数的关系错综复杂，偏见、冷漠、偏执。可能因为我运气不好，都撞见了。</p>
+<p>更新一下对世界的概念吧，怎么能信奉美好、信奉公平、信奉真实呢？你太单纯了，你的努力和认真是最不重要的东西。</p>
+<p>但是我还是不愿意放弃。</p>
+<p>可能是因为我也见过网协温暖的一面吧，我固执地认为这一面存在。</p>
+<p>就这样吧，要是这样也不要我，我没什么可说的。这烂摊子我还懒得搞呢，自己玩儿去吧。</p>
+<p>没心思刷概率题和离散题，随便搞了一会儿HTML、CSS。网页真的很有趣啊，我想做网页，但是要学的好多，除了这俩还有JS、数据库等等。慢慢来吧。</p>
+<hr>
+<p>昨天网协换届结果终于出了！！！虽然早就知道了并不意外还是蜜汁开心！！！</p>
+<p>晚上六点半综B-201开会，结果下午三四点才发短信，果然是个要倒闭的组织……..</p>
+<p>先是技术部学了两个月unity就开始当老师的陈老板讲话，中间一度面临时间闪回的尴尬，然后王老板中途插话，又强调了一定要搞联谊！联！谊！两………两周一次？我……..</p>
+<p>然后诊所讲话，唐回峰一直在卖萌啊啊啊，这真是个捉摸不透的男人………诊所绿也很好看嘛你们为什么不喜欢绿色啦！</p>
+<p>接着组织部讲话，虽然又是一度翻车不过潘达岩大大凭借高超的口才和诊所的模板（?）强行拉了一波情怀，扳回一城~</p>
+<p>然后贾老板讲了网络部的事，说实话网络部的事情应该是最多的了！又是直播又是做项目还要带部员！虽然最后也稍稍翻了车，但是比倒闭的技术部还是好一点~</p>
+<p>啊啊啊啊啊啊啊树莓上了！这ppt做的真好看！字体都好想要啊啊啊啊啊！我觉得树莓部长还是很能想的呢，眼光长远，就是不知道之后行不行。</p>
+<p>主席黄俊伟最后总结了一下网协的一年，放了一大波黑照！但是为什么要放我和易翔宇面试的照片呢……..</p>
+<p>接着就是建群交接，组织部可能没什么要交接的吧反正挺闲…….话说什么时候把钥匙给我啊啊啊？</p>
+<p>加了技术部和网络部的群卧底www</p>
+<p>然后回寝室其实才是聊天的开始！加了一波人，和黄俊伟、张晨阳、王元玮都聊了聊，深感打字速度不足……..和王老板聊了漫展和美食，还挺开心的，之后网协要出去轰趴？王老板貌似对鳗鱼饭很感兴趣，假期可以约一下~</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/02/香帅的北大金融学课 春节房地产特辑/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1051,8 +1662,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Thoughts/" itemprop="url" rel="index">
-                    <span itemprop="name">Thoughts</span>
+                  <a href="/categories/读书/" itemprop="url" rel="index">
+                    <span itemprop="name">读书</span>
                   </a>
                 </span>
 
@@ -1195,7 +1806,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1206,7 +1817,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1217,7 +1828,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -1452,6 +2063,28 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 
